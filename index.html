@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Windmill Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://lualliace.gtsc.cloud/assets/css/tailwind.output.css"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
+      defer
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://lualliace.gtsc.cloud//assets/js/init-alpine.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"
+    />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"
+      defer
+    ></script>
+    <script
+      src="https://lualliace.gtsc.cloud/assets/js/charts-lines.js"
+      defer
+    ></script>
+    <script
+      src="https://lualliace.gtsc.cloud//assets/js/charts-pie.js"
+      defer
+    ></script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+      var socket = io("https://fef0-207-148-79-34.ngrok-free.app");
+      var username = localStorage.username || "f";
+      var password = localStorage.password || "f";
+      var cpassword = "";
+      var current_page = "";
+
+      socket.emit("login", username, password);
+
+      socket.on("login", (json) => {
+        console.log(json);
+        if (json.success) {
+          localStorage.setItem("username", username);
+          localStorage.setItem("password", password);
+          socket.emit("change_page", "main");
+          current_page = "main";
+        } else {
+          localStorage.removeItem("username");
+          localStorage.removeItem("password");
+          if (current_page !== "login") {
+            socket.emit("change_page", "login");
+            current_page = "login";
+          } else {
+            Swal.fire({ icon: "error", text: json.data.message });
+          }
+        }
+      });
+      socket.on("change_page", (page) => {
+        document.getElementById("body").innerHTML = page;
+      });
+
+      function login() {
+        const u = document.getElementById("username").value;
+        const pw = document.getElementById("password").value;
+        if (!u || !pw) {
+          return Swal.fire({
+            icon: "error",
+            text: "Make sure u already fill the Username,Password",
+          });
+        }
+        socket.emit("login", u, pw);
+      }
+    </script>
+  </head>
+  <body id="body"></body>
+</html>
