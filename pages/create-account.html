@@ -109,7 +109,7 @@
           return Swal.fire({icon:"error",text:"The Password and Confirm Passworld must be same"});
         }
 
-        fetch("https://fef0-207-148-79-34.ngrok-free.app", {
+        fetch("https://fef0-207-148-79-34.ngrok-free.app/register", {
           method: "POST",
           body: JSON.stringify({
             username: username, password: password, cpassword: cpassword
